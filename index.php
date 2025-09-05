@@ -10,14 +10,22 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/footer.css" rel="stylesheet">
     <link href="./css/login.css" rel="stylesheet">
+    <!-- Dark Mode CSS -->
+    <link href="./css/dark-mode.css" rel="stylesheet">
     <title>Hotel Management System - FITDNU</title>
 </head>
 
 <body>
-    <section class="vh-100 d-flex justify-content-center align-items-center">
+    <section class="vh-100 d-flex justify-content-center align-items-center login-container">
         <div class="container-fluid h-custom">
-            <div class="d-flex flex-row align-items-center justify-content-center">
+            <div class="d-flex flex-row align-items-center justify-content-center mb-4">
                 <h2 class="text-primary" style="color: #f66600;">HOTEL MANAGEMENT SYSTEM</h2>
+                <!-- Theme toggle button for login page -->
+                <button type="button" class="theme-toggle btn ms-3" id="login-theme-toggle" title="Chuyển đổi giao diện tối/sáng">
+                    <span class="theme-icon">
+                        <i class="fas fa-moon"></i>
+                    </span>
+                </button>
             </div>
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-md-9 col-lg-6 col-xl-5">
@@ -25,7 +33,8 @@ session_start();
                         alt="Sample image">
                 </div>
                 <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                    <form action="./handle/login_process.php" method="POST">
+                    <div class="card login-card p-4 shadow">
+                        <form action="./handle/login_process.php" method="POST">
                         <!-- Username input -->
                         <div data-mdb-input-init class="form-outline mb-4">
                             <input type="text" name="username" id="form3Example3" class="form-control form-control-lg"
@@ -75,12 +84,39 @@ session_start();
                                 style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
                         </div>
 
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
 
     </section>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Dark Mode JS -->
+    <script src="./js/dark-mode.js"></script>
+    <script>
+        // Custom toggle for login page
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginToggle = document.getElementById('login-theme-toggle');
+            if (loginToggle && window.themeManager) {
+                loginToggle.addEventListener('click', function() {
+                    window.themeManager.toggleTheme();
+                });
+                
+                // Update icon based on current theme
+                window.addEventListener('themeChanged', function(e) {
+                    const icon = loginToggle.querySelector('i');
+                    if (e.detail.theme === 'dark') {
+                        icon.className = 'fas fa-sun';
+                    } else {
+                        icon.className = 'fas fa-moon';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 <footer class="footer">
     Copyright © 2025 - FITDNU
