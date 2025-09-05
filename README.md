@@ -54,9 +54,58 @@ Hệ thống quản lý phòng khách sạn (Hotel Management System) được p
 
 </div>
 
-## ⚙️ 3. Cài đặt và Sử dụng
 
-### 3.1. Yêu cầu hệ thống
+## 3. Hình ảnh các chức năng
+### 3.1. 🔐 Trang Đăng nhập (login.png)
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/09b28be4-f6f2-43a2-a56f-394ea59420fa" />
+
+### 3.2. 📊 Dashboard (dashboard.png)  
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/c72b2628-47c1-4178-af58-1bb184e2da70" />
+
+### 3.3. 👥 Quản lý Khách hàng
+- Trang danh sách khách hàng
+- <img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/904d6802-9d8d-460e-b275-b7195e75c7ac" />
+
+- Form thêm/sửa khách hàng mới
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/52fd5112-a75b-40af-bb25-2cf9d794c2db" />
+
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/a761c24f-8d7a-4c5a-a62c-2d230a824996" />
+
+### 3.4. 🏨 Quản lý Loại phòng  
+- Trang danh sách loại phòng
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/b6aba4a0-e621-46f3-9e92-5b23c9d617fb" />
+
+- Form thêm/sửa loại phòng
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/86cfc8ac-1810-49d5-ad18-e5799492ee48" />
+
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/f06b457c-97ca-4e8c-83af-e8467b17c338" />
+
+
+### 3.5. 🚪 Quản lý Phòng
+- Trang danh sách phòng
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/b3435874-13fa-4ae0-a04c-87245876e457" />
+
+- Form cập nhật trạng thái phòng
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/42f5ca15-0231-4e3a-a37e-9779a8f7e2bc" />
+
+### 3.6. 📅 Quản lý Đặt phòng
+- Trang danh sách đặt phòng  
+- Form tạo đặt phòng mới
+
+### 3.7. 🔍 Tính năng Tìm kiếm
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/02a43cc3-e27b-438b-998f-6aba0374a177" />
+
+
+### 3.8. 🌙 Dark Mode
+- Giao diện sáng
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/1aaadb9e-a804-4209-acf1-6448cbeb03c3" />
+
+- Giao diện tối  
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/d40e8d15-2364-4cd0-a4e6-3d6c77736b87" />
+
+## ⚙️ 4. Cài đặt và Sử dụng
+
+### 4.1. Yêu cầu hệ thống
 
 - **Web Server**: Apache/Nginx
 - **PHP**: Version 7.4 trở lên
@@ -64,20 +113,20 @@ Hệ thống quản lý phòng khách sạn (Hotel Management System) được p
 - **XAMPP** (khuyến nghị cho Windows)
 - **MySQL Workbench** (để quản lý database)
 
-### 3.2. Cài đặt
+### 4.2. Cài đặt
 
-#### 3.2.1. Tải project
+#### 4.2.1. Tải project
 ```bash
 git clone https://github.com/1677030156NguyenMinhPhuongKHMT17-01/Nhom5_XayDungWebQuanLyPhongKhachSan.git
 cd Nhom5_XayDungWebQuanLyPhongKhachSan
 ```
 
-#### 3.2.2. Cài đặt XAMPP (Windows)
+#### 4.2.2. Cài đặt XAMPP (Windows)
 1. Tải và cài đặt [XAMPP](https://www.apachefriends.org/download.html)
 2. Khởi động Apache và MySQL từ XAMPP Control Panel
 3. Sao chép project vào thư mục `C:\xampp\htdocs\BTL\`
 
-#### 3.2.3. Cài đặt và cấu hình MySQL Workbench
+#### 4.2.3. Cài đặt và cấu hình MySQL Workbench
 1. Tải và cài đặt [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
 2. Khởi động MySQL Workbench
 3. Tạo kết nối mới:
@@ -167,7 +216,7 @@ INSERT INTO rooms (room_number, roomtype_id, status) VALUES
 ('301', 3, 'available');
 ```
 
-#### 3.2.4. Cấu hình kết nối database
+#### 4.2.4. Cấu hình kết nối database
 Chỉnh sửa file `functions/db_connection.php`:
 ```php
 $servername = "localhost";
@@ -176,85 +225,10 @@ $password = ""; // Hoặc mật khẩu MySQL của bạn
 $dbname = "ql_phongks";
 ```
 
-### 3.3. Chạy ứng dụng
+### 4.3. Chạy ứng dụng
 
 1. Đảm bảo Apache và MySQL đang chạy trong XAMPP
 2. Truy cập: `http://localhost/BTL/`
 3. Đăng nhập với tài khoản:
    - **Username**: admin
    - **Password**: admin123
-
-### 3.4. Cấu trúc project
-
-```
-BTL/
-├── index.php                 # Trang đăng nhập
-├── functions/               # Business logic
-│   ├── auth.php
-│   ├── db_connection.php
-│   ├── guest_functions.php
-│   ├── room_functions.php
-│   ├── roomtype_functions.php
-│   └── booking_functions.php
-├── handle/                  # Controllers
-│   ├── login_process.php
-│   ├── logout_process.php
-│   └── *_process.php
-├── views/                   # Views
-│   ├── dashboard.php        # Trang chính
-│   ├── menu.php            # Navigation
-│   ├── guest.php           # Quản lý khách hàng
-│   ├── room.php            # Quản lý phòng
-│   ├── roomtype.php        # Quản lý loại phòng
-│   ├── booking.php         # Quản lý đặt phòng
-│   └── */                  # Thư mục con cho create/edit
-├── css/                    # Stylesheets
-└── images/                 # Assets
-```
-## 4. Hình ảnh các chức năng
-### 4.1. 🔐 Trang Đăng nhập (login.png)
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/09b28be4-f6f2-43a2-a56f-394ea59420fa" />
-
-### 4.2. 📊 Dashboard (dashboard.png)  
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/c72b2628-47c1-4178-af58-1bb184e2da70" />
-
-### 4.3. 👥 Quản lý Khách hàng
-- Trang danh sách khách hàng
-- <img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/904d6802-9d8d-460e-b275-b7195e75c7ac" />
-
-- Form thêm/sửa khách hàng mới
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/52fd5112-a75b-40af-bb25-2cf9d794c2db" />
-
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/a761c24f-8d7a-4c5a-a62c-2d230a824996" />
-
-### 4.4. 🏨 Quản lý Loại phòng  
-- Trang danh sách loại phòng
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/b6aba4a0-e621-46f3-9e92-5b23c9d617fb" />
-
-- Form thêm/sửa loại phòng
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/86cfc8ac-1810-49d5-ad18-e5799492ee48" />
-
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/f06b457c-97ca-4e8c-83af-e8467b17c338" />
-
-
-### 4.5. 🚪 Quản lý Phòng
-- Trang danh sách phòng
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/b3435874-13fa-4ae0-a04c-87245876e457" />
-
-- Form cập nhật trạng thái phòng
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/42f5ca15-0231-4e3a-a37e-9779a8f7e2bc" />
-
-### 4.6. 📅 Quản lý Đặt phòng
-- Trang danh sách đặt phòng  
-- Form tạo đặt phòng mới
-
-### 4.7. 🔍 Tính năng Tìm kiếm
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/02a43cc3-e27b-438b-998f-6aba0374a177" />
-
-
-### 4.8. 🌙 Dark Mode
-- Giao diện sáng
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/1aaadb9e-a804-4209-acf1-6448cbeb03c3" />
-
-- Giao diện tối  
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/d40e8d15-2364-4cd0-a4e6-3d6c77736b87" />
