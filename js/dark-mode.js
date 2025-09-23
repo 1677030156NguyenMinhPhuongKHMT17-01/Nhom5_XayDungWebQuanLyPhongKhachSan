@@ -104,12 +104,22 @@ class ThemeManager {
 
     updateToggleIcon(theme) {
         const iconContainer = document.querySelector('#theme-toggle .theme-icon');
-        if (!iconContainer) return;
+        const iconDirect = document.querySelector('#theme-toggle i');
         
-        if (theme === 'dark') {
-            iconContainer.innerHTML = '<i class="fas fa-sun" title="Chuyển sang giao diện sáng"></i>';
-        } else {
-            iconContainer.innerHTML = '<i class="fas fa-moon" title="Chuyển sang giao diện tối"></i>';
+        if (iconContainer) {
+            if (theme === 'dark') {
+                iconContainer.innerHTML = '<i class="bi bi-sun" title="Chuyển sang giao diện sáng"></i>';
+            } else {
+                iconContainer.innerHTML = '<i class="bi bi-moon" title="Chuyển sang giao diện tối"></i>';
+            }
+        } else if (iconDirect) {
+            if (theme === 'dark') {
+                iconDirect.className = 'bi bi-sun';
+                iconDirect.setAttribute('title', 'Chuyển sang giao diện sáng');
+            } else {
+                iconDirect.className = 'bi bi-moon';
+                iconDirect.setAttribute('title', 'Chuyển sang giao diện tối');
+            }
         }
     }
 
