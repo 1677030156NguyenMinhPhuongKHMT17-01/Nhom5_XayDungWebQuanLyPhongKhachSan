@@ -1,6 +1,7 @@
 <?php
 require_once '../functions/auth.php';
 require_once '../functions/room_functions.php';
+require_once '../functions/utils.php'; // Sử dụng utility functions
 
 // Kiểm tra đăng nhập
 checkLogin('../index.php');
@@ -10,16 +11,9 @@ $currentUser = getCurrentUser();
 $pageTitle = 'Quản lý phòng';
 $baseUrl = '../';
 
-// Xử lý tìm kiếm
-$rooms = [];
-$searchKeyword = '';
-
-if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
-    $searchKeyword = trim($_GET['search']);
-    $rooms = searchRooms($searchKeyword);
-} else {
-    $rooms = getAllRooms();
-}
+// Xử lý tìm kiếm - đơn giản hóa
+$searchKeyword = trim($_GET['search'] ?? '');
+$rooms = $searchKeyword ? searchRooms($searchKeyword) : getAllRooms();
 
 // Include layout header
 include '../layout/admin_header.php';
@@ -35,65 +29,34 @@ include '../layout/admin_header.php';
                     </a>
                 </div>
 
-                <!-- Search Form -->
-                <form method="GET" class="mb-4">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <input type="text" name="search" class="form-control" 
-                                   placeholder="Tìm kiếm theo số phòng, loại phòng, trạng thái..." 
-                                   value="<?= htmlspecialchars($searchKeyword) ?>">
-                        </div>
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-outline-primary me-2">
-                                <i class="bi bi-search me-1"></i>Tìm kiếm
-                            </button>
-                            <?php if ($searchKeyword): ?>
-                                <a href="room.php" class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-clockwise me-1"></i>Reset
-                                </a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </form>
+                <!-- Search Form - sử dụng utility function -->
+                <?= searchForm($searchKeyword, 'Tìm kiếm theo số phòng, loại phòng, trạng thái...', 'room.php') ?>
 
-                <!-- Hiển thị thông báo -->
+                <!-- Alert Messages - sử dụng utility function -->
                 <?php if (isset($_SESSION['success'])): ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle me-2"></i><?= $_SESSION['success'] ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
+                    <?= showAlert('success', $_SESSION['success']) ?>
                     <?php unset($_SESSION['success']); ?>
                 <?php endif; ?>
 
                 <?php if (isset($_SESSION['error'])): ?>
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-triangle me-2"></i><?= $_SESSION['error'] ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
+                    <?= showAlert('danger', $_SESSION['error']) ?>
                     <?php unset($_SESSION['error']); ?>
                 <?php endif; ?>
 
+                <!-- Search Results Info -->
                 <?php if ($searchKeyword): ?>
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>
-                        Kết quả tìm kiếm cho: "<strong><?= htmlspecialchars($searchKeyword) ?></strong>"
-                    </div>
+                    <?= showAlert('info', "Kết quả tìm kiếm cho: \"" . e($searchKeyword) . "\"") ?>
                 <?php endif; ?>
 
+                <!-- Content -->
                 <?php if (empty($rooms)): ?>
-                    <div class="text-center py-5">
-                        <i class="bi bi-door-open text-muted" style="font-size: 4rem;"></i>
-                        <h5 class="text-muted mt-3">
-                            <?php if ($searchKeyword): ?>
-                                Không tìm thấy phòng nào phù hợp với từ khóa "<?= htmlspecialchars($searchKeyword) ?>"
-                            <?php else: ?>
-                                Chưa có phòng nào
-                            <?php endif; ?>
-                        </h5>
-                        <a href="room/create_room.php" class="btn btn-primary mt-3">
-                            <i class="bi bi-plus-circle me-1"></i>Thêm phòng đầu tiên
-                        </a>
-                    </div>
+                    <?= emptyState(
+                        'bi bi-door-open', 
+                        $searchKeyword ? 'Không tìm thấy phòng nào' : 'Chưa có phòng nào',
+                        $searchKeyword ? "Không tìm thấy phòng phù hợp với \"$searchKeyword\"" : 'Hãy thêm phòng đầu tiên để bắt đầu',
+                        'room/create_room.php',
+                        'Thêm phòng mới'
+                    ) ?>
                 <?php else: ?>
                     <div class="table-responsive">
                         <table class="table table-striped datatable">
@@ -102,8 +65,7 @@ include '../layout/admin_header.php';
                                     <th>ID</th>
                                     <th>Số phòng</th>
                                     <th>Loại phòng</th>
-                                    <th>Giá/đêm</th>
-                                    <th>Sức chứa</th>
+                                    <th>Giá phòng</th>
                                     <th>Trạng thái</th>
                                     <th>Thao tác</th>
                                 </tr>
@@ -111,53 +73,18 @@ include '../layout/admin_header.php';
                             <tbody>
                                 <?php foreach ($rooms as $room): ?>
                                     <tr>
-                                        <td><?= $room['id'] ?></td>
-                                        <td><strong><?= htmlspecialchars($room['room_number']) ?></strong></td>
-                                        <td><?= htmlspecialchars($room['name_Room_Type'] ?? 'N/A') ?></td>
-                                        <td class="text-success fw-bold"><?= number_format($room['price_per_night'] ?? 0, 0, ',', '.') ?> VNĐ</td>
-                                        <td><i class="bi bi-people me-1"></i><?= $room['capacity'] ?? 'N/A' ?> người</td>
+                                        <td><?= e($room['id']) ?></td>
+                                        <td><strong><?= e($room['room_number']) ?></strong></td>
+                                        <td><?= e($room['name_Room_Type'] ?? 'N/A') ?></td>
+                                        <td><?= formatCurrency($room['price_per_night'] ?? 0) ?></td>
+                                        <td><?= getStatusBadge($room['status'] ?? 'available', 'room') ?></td>
                                         <td>
-                                            <?php
-                                            $statusClass = '';
-                                            $statusText = '';
-                                            $statusIcon = '';
-                                            switch ($room['status']) {
-                                                case 'available':
-                                                    $statusClass = 'success';
-                                                    $statusText = 'Trống';
-                                                    $statusIcon = 'bi-check-circle';
-                                                    break;
-                                                case 'occupied':
-                                                    $statusClass = 'danger';
-                                                    $statusText = 'Đã thuê';
-                                                    $statusIcon = 'bi-person-fill';
-                                                    break;
-                                                case 'maintenance':
-                                                    $statusClass = 'warning';
-                                                    $statusText = 'Bảo trì';
-                                                    $statusIcon = 'bi-tools';
-                                                    break;
-                                                default:
-                                                    $statusClass = 'secondary';
-                                                    $statusText = ucfirst($room['status']);
-                                                    $statusIcon = 'bi-question-circle';
-                                            }
-                                            ?>
-                                            <span class="badge bg-<?= $statusClass ?>">
-                                                <i class="<?= $statusIcon ?> me-1"></i><?= $statusText ?>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="room/edit_room.php?id=<?= $room['id'] ?>" 
-                                                   class="btn btn-sm btn-outline-primary" title="Sửa">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" 
-                                                        title="Xóa" onclick="confirmDelete(<?= $room['id'] ?>, '<?= addslashes($room['room_number']) ?>')">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
+                                            <?= getActionButtons(
+                                                $room['id'],
+                                                "room/edit_room.php?id={$room['id']}",
+                                                "../handle/room_process.php",
+                                                $room['room_number']
+                                            ) ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -178,12 +105,6 @@ include '../layout/admin_header.php';
     </div>
 </div>
 
-<script>
-function confirmDelete(id, roomNumber) {
-    if (confirm('Bạn có chắc chắn muốn xóa phòng "' + roomNumber + '"?')) {
-        window.location.href = '../handle/room_process.php?action=delete&id=' + id;
-    }
-}
-</script>
+<?= deleteConfirmScript() ?>
 
 <?php include '../layout/admin_footer.php'; ?>

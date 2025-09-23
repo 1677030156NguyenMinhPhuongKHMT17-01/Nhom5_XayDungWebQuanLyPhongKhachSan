@@ -16,18 +16,27 @@ switch ($action) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $guest_id = $_POST['guest_id'] ?? '';
             $room_id = $_POST['room_id'] ?? 0;
+            $check_in_date = $_POST['check_in_date'] ?? '';
+            $check_out_date = $_POST['check_out_date'] ?? '';
             $total_price = $_POST['total_price'] ?? 0;
             $status = $_POST['status'] ?? 'pending';
 
             // Validate dữ liệu
-            if (empty($guest_id) || empty($room_id) || $total_price <= 0) {
+            if (empty($guest_id) || empty($room_id) || empty($check_in_date) || empty($check_out_date) || $total_price <= 0) {
                 $_SESSION['error'] = 'Vui lòng điền đầy đủ thông tin hợp lệ!';
                 header('Location: ../views/booking/create_booking.php');
                 exit();
             }
 
+            // Validate dates
+            if (strtotime($check_out_date) <= strtotime($check_in_date)) {
+                $_SESSION['error'] = 'Ngày check-out phải sau ngày check-in!';
+                header('Location: ../views/booking/create_booking.php');
+                exit();
+            }
+
             // Tạo booking mới
-            $result = createBooking($guest_id, $room_id, $total_price, $status);
+            $result = createBooking($guest_id, $room_id, $check_in_date, $check_out_date, $total_price, $status);
 
             if ($result) {
                 $_SESSION['success'] = 'Tạo đặt phòng thành công!';
@@ -44,18 +53,27 @@ switch ($action) {
             $id = $_POST['id'] ?? 0;
             $guest_id = $_POST['guest_id'] ?? '';
             $room_id = $_POST['room_id'] ?? 0;
+            $check_in_date = $_POST['check_in_date'] ?? '';
+            $check_out_date = $_POST['check_out_date'] ?? '';
             $total_price = $_POST['total_price'] ?? 0;
             $status = $_POST['status'] ?? 'pending';
 
             // Validate dữ liệu
-            if (empty($id) || empty($guest_id) || empty($room_id) || $total_price <= 0) {
+            if (empty($id) || empty($guest_id) || empty($room_id) || empty($check_in_date) || empty($check_out_date) || $total_price <= 0) {
                 $_SESSION['error'] = 'Vui lòng điền đầy đủ thông tin hợp lệ!';
                 header("Location: ../views/booking/edit_booking.php?id=$id");
                 exit();
             }
 
+            // Validate dates
+            if (strtotime($check_out_date) <= strtotime($check_in_date)) {
+                $_SESSION['error'] = 'Ngày check-out phải sau ngày check-in!';
+                header("Location: ../views/booking/edit_booking.php?id=$id");
+                exit();
+            }
+
             // Cập nhật booking
-            $result = updateBooking($id, $guest_id, $room_id, $total_price, $status);
+            $result = updateBooking($id, $guest_id, $room_id, $check_in_date, $check_out_date, $total_price, $status);
 
             if ($result) {
                 $_SESSION['success'] = 'Cập nhật đặt phòng thành công!';

@@ -219,4 +219,33 @@ function updateRoomStatus($id, $status) {
     return $result;
 }
 
+/**
+ * Lấy danh sách phòng theo trạng thái
+ */
+function getRoomsByStatus($status) {
+    $conn = getDbConnection();
+    $sql = "SELECT r.*, rt.name_Room_Type, rt.price_per_night, rt.capacity 
+            FROM rooms r 
+            LEFT JOIN roomtypes rt ON r.room_type_id = rt.id 
+            WHERE r.status = ? 
+            ORDER BY r.room_number ASC";
+    
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $status);
+    mysqli_stmt_execute($stmt);
+    
+    $result = mysqli_stmt_get_result($stmt);
+    $rooms = [];
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $rooms[] = $row;
+        }
+    }
+    
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+    return $rooms;
+}
+
 ?>

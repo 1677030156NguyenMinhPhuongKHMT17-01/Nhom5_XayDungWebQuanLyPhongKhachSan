@@ -1,162 +1,198 @@
 <?php
+require_once '../../functions/auth.php';
 require_once '../../functions/booking_functions.php';
 require_once '../../functions/guest_functions.php';
 require_once '../../functions/room_functions.php';
-require_once '../menu.php';
+require_once '../../functions/utils.php';
 
-// Lấy danh sách khách hàng và phòng trống
+// Kiểm tra đăng nhập
+checkLogin('../../index.php');
+$currentUser = getCurrentUser();
+
+// Thiết lập thông tin trang
+$pageTitle = 'Tạo đặt phòng mới';
+$baseUrl = '../../';
+
+// Lấy danh sách khách hàng và phòng có sẵn
 $guests = getAllGuests();
-$availableRooms = getAvailableRooms();
+$availableRooms = getRoomsByStatus('available');
+
+// Include layout header
+include '../../layout/admin_header.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo đặt phòng mới</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../css/dark-mode.css" rel="stylesheet">
-</head>
-
-<body>
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="mb-0">
-                            <i class="fas fa-calendar-plus"></i> Tạo đặt phòng mới
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <!-- Hiển thị thông báo lỗi -->
-                        <?php if (isset($_SESSION['error'])): ?>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <?= $_SESSION['error'] ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                            <?php unset($_SESSION['error']); ?>
-                        <?php endif; ?>
-
-                        <?php if (empty($guests)): ?>
-                            <div class="alert alert-warning" role="alert">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                Chưa có khách hàng nào. Vui lòng <a href="../guest/create_guest.php">tạo khách hàng</a> trước khi đặt phòng.
-                            </div>
-                        <?php elseif (empty($availableRooms)): ?>
-                            <div class="alert alert-warning" role="alert">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                Hiện tại không có phòng trống nào. Vui lòng kiểm tra lại sau.
-                            </div>
-                        <?php else: ?>
-                            <form action="../../handle/booking_process.php" method="POST" id="bookingForm">
-                                <input type="hidden" name="action" value="create">
-                                
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="guest_id" class="form-label">Khách hàng <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="guest_id" name="guest_id" required>
-                                                <option value="">-- Chọn khách hàng --</option>
-                                                <?php foreach ($guests as $guest): ?>
-                                                    <option value="<?= $guest['id'] ?>" 
-                                                            <?= (isset($_POST['guest_id']) && $_POST['guest_id'] == $guest['id']) ? 'selected' : '' ?>>
-                                                        <?= htmlspecialchars($guest['full_name']) ?> - <?= htmlspecialchars($guest['phone_number']) ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="room_id" class="form-label">Phòng <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="room_id" name="room_id" required onchange="updatePrice()">
-                                                <option value="">-- Chọn phòng --</option>
-                                                <?php foreach ($availableRooms as $room): ?>
-                                                    <option value="<?= $room['id'] ?>" 
-                                                            data-price="<?= $room['price_per_night'] ?>"
-                                                            <?= (isset($_POST['room_id']) && $_POST['room_id'] == $room['id']) ? 'selected' : '' ?>>
-                                                        <?= htmlspecialchars($room['room_number']) ?> - 
-                                                        <?= htmlspecialchars($room['name_Room_Type']) ?> 
-                                                        (<?= number_format($room['price_per_night'], 0, ',', '.') ?> VNĐ/đêm)
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="nights" class="form-label">Số đêm <span class="text-danger">*</span></label>
-                                            <input type="number" class="form-control" id="nights" name="nights" 
-                                                   placeholder="1" min="1" value="1" 
-                                                   onchange="updatePrice()" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="total_price" class="form-label">Tổng tiền (VNĐ) <span class="text-danger">*</span></label>
-                                            <input type="number" class="form-control" id="total_price" name="total_price" 
-                                                   placeholder="0" min="0" readonly required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="status" class="form-label">Trạng thái <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="status" name="status" required>
-                                                <option value="pending" <?= (isset($_POST['status']) && $_POST['status'] == 'pending') ? 'selected' : 'selected' ?>>
-                                                    Chờ xác nhận (Pending)
-                                                </option>
-                                                <option value="confirmed" <?= (isset($_POST['status']) && $_POST['status'] == 'confirmed') ? 'selected' : '' ?>>
-                                                    Đã xác nhận (Confirmed)
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex justify-content-between">
-                                    <a href="../booking.php" class="btn btn-secondary">
-                                        <i class="fas fa-arrow-left"></i> Quay lại
-                                    </a>
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save"></i> Tạo đặt phòng
-                                    </button>
-                                </div>
-                            </form>
-                        <?php endif; ?>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-4">
+                    <a href="../booking.php" class="btn btn-outline-secondary me-3">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <div>
+                        <h5 class="card-title mb-0"><i class="bi bi-calendar-plus me-2"></i>Tạo đặt phòng mới</h5>
+                        <small class="text-muted">Đặt phòng cho khách hàng</small>
                     </div>
                 </div>
+
+                <!-- Alert Messages -->
+                <?php if (isset($_SESSION['error'])): ?>
+                    <?= showAlert('danger', $_SESSION['error']) ?>
+                    <?php unset($_SESSION['error']); ?>
+                <?php endif; ?>
+
+                <?php if (empty($guests)): ?>
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Chưa có khách hàng nào. Vui lòng <a href="../guest/create_guest.php" class="alert-link">tạo khách hàng</a> trước khi đặt phòng.
+                    </div>
+                <?php elseif (empty($availableRooms)): ?>
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Không có phòng nào có sẵn. Vui lòng kiểm tra lại trạng thái phòng.
+                    </div>
+                <?php else: ?>
+                    <form action="../../handle/booking_process.php" method="POST">
+                        <input type="hidden" name="action" value="create">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="guest_id" class="form-label">Khách hàng <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="guest_id" name="guest_id" required>
+                                        <option value="">-- Chọn khách hàng --</option>
+                                        <?php foreach ($guests as $guest): ?>
+                                            <option value="<?= e($guest['id']) ?>" 
+                                                <?= ($_POST['guest_id'] ?? '') == $guest['id'] ? 'selected' : '' ?>>
+                                                <?= e($guest['full_name']) ?> - <?= e($guest['email']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="room_id" class="form-label">Phòng <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="room_id" name="room_id" required>
+                                        <option value="">-- Chọn phòng --</option>
+                                        <?php foreach ($availableRooms as $room): ?>
+                                            <option value="<?= e($room['id']) ?>" 
+                                                <?= ($_POST['room_id'] ?? '') == $room['id'] ? 'selected' : '' ?>
+                                                data-price="<?= e($room['price_per_night'] ?? 0) ?>">
+                                                Phòng <?= e($room['room_number']) ?> - <?= e($room['name_Room_Type'] ?? 'N/A') ?>
+                                                (<?= formatCurrency($room['price_per_night'] ?? 0) ?>/đêm)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="check_in_date" class="form-label">Ngày check-in <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="check_in_date" name="check_in_date" 
+                                           value="<?= e($_POST['check_in_date'] ?? date('Y-m-d')) ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="check_out_date" class="form-label">Ngày check-out <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="check_out_date" name="check_out_date" 
+                                           value="<?= e($_POST['check_out_date'] ?? date('Y-m-d', strtotime('+1 day'))) ?>" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="nights" class="form-label">Số đêm</label>
+                                    <input type="number" class="form-control" id="nights" name="nights" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="total_price" class="form-label">Tổng tiền (VNĐ) <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="total_price" name="total_price" 
+                                           value="<?= e($_POST['total_price'] ?? '') ?>" min="0" step="1000" required readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Trạng thái <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="status" name="status" required>
+                                        <option value="pending" <?= ($_POST['status'] ?? '') == 'pending' ? 'selected' : '' ?>>Chờ xác nhận</option>
+                                        <option value="confirmed" <?= ($_POST['status'] ?? '') == 'confirmed' ? 'selected' : '' ?>>Đã xác nhận</option>
+                                        <option value="checked_in" <?= ($_POST['status'] ?? '') == 'checked_in' ? 'selected' : '' ?>>Đã nhận phòng</option>
+                                        <option value="checked_out" <?= ($_POST['status'] ?? '') == 'checked_out' ? 'selected' : '' ?>>Đã trả phòng</option>
+                                        <option value="cancelled" <?= ($_POST['status'] ?? '') == 'cancelled' ? 'selected' : '' ?>>Đã hủy</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="../booking.php" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg me-1"></i>Tạo đặt phòng
+                            </button>
+                        </div>
+                    </form>
+
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const checkInDate = document.getElementById('check_in_date');
+                        const checkOutDate = document.getElementById('check_out_date');
+                        const nightsField = document.getElementById('nights');
+                        const roomSelect = document.getElementById('room_id');
+                        const totalPriceField = document.getElementById('total_price');
+
+                        // Set minimum dates
+                        const today = new Date().toISOString().split('T')[0];
+                        checkInDate.min = today;
+                        
+                        // Auto-calculate nights and total price
+                        function calculateBooking() {
+                            const checkIn = new Date(checkInDate.value);
+                            const checkOut = new Date(checkOutDate.value);
+                            const selectedRoom = roomSelect.options[roomSelect.selectedIndex];
+                            
+                            if (checkInDate.value && checkOutDate.value && checkOut > checkIn) {
+                                const diffTime = Math.abs(checkOut - checkIn);
+                                const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                nightsField.value = nights;
+                                
+                                // Update checkout min date
+                                checkOutDate.min = checkInDate.value;
+                                
+                                // Calculate total price
+                                if (selectedRoom && selectedRoom.dataset.price) {
+                                    const pricePerNight = parseFloat(selectedRoom.dataset.price);
+                                    const totalPrice = nights * pricePerNight;
+                                    totalPriceField.value = totalPrice;
+                                }
+                            } else {
+                                nightsField.value = '';
+                                totalPriceField.value = '';
+                            }
+                        }
+
+                        // Event listeners
+                        checkInDate.addEventListener('change', calculateBooking);
+                        checkOutDate.addEventListener('change', calculateBooking);
+                        roomSelect.addEventListener('change', calculateBooking);
+                        
+                        // Initial calculation
+                        calculateBooking();
+                    });
+                    </script>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
-    <script>
-        function updatePrice() {
-            const roomSelect = document.getElementById('room_id');
-            const nightsInput = document.getElementById('nights');
-            const totalPriceInput = document.getElementById('total_price');
-            
-            const selectedRoom = roomSelect.options[roomSelect.selectedIndex];
-            const pricePerNight = selectedRoom ? parseFloat(selectedRoom.getAttribute('data-price')) : 0;
-            const nights = parseInt(nightsInput.value) || 1;
-            
-            const totalPrice = pricePerNight * nights;
-            totalPriceInput.value = totalPrice;
-        }
-        
-        // Cập nhật giá khi trang load
-        document.addEventListener('DOMContentLoaded', function() {
-            updatePrice();
-        });
-    </script>
-    <script src="../../js/dark-mode.js"></script>
-</body>
-
-</html>
+<?php include '../../layout/admin_footer.php'; ?>

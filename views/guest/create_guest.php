@@ -1,6 +1,7 @@
 <?php
 require_once '../../functions/auth.php';
 require_once '../../functions/guest_functions.php';
+require_once '../../functions/utils.php'; // Sử dụng utility functions
 
 // Kiểm tra đăng nhập
 checkLogin('../../index.php');
@@ -27,12 +28,9 @@ include '../../layout/admin_header.php';
                     </div>
                 </div>
 
-                <!-- Hiển thị thông báo lỗi -->
+                <!-- Alert Messages - sử dụng utility function -->
                 <?php if (isset($_SESSION['error'])): ?>
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-triangle me-2"></i><?= $_SESSION['error'] ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
+                    <?= showAlert('danger', $_SESSION['error']) ?>
                     <?php unset($_SESSION['error']); ?>
                 <?php endif; ?>
 
@@ -44,14 +42,14 @@ include '../../layout/admin_header.php';
                             <div class="mb-3">
                                 <label for="full_name" class="form-label">Họ và tên <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="full_name" name="full_name" 
-                                       value="<?= isset($_POST['full_name']) ? htmlspecialchars($_POST['full_name']) : '' ?>" required>
+                                       value="<?= e($_POST['full_name'] ?? '') ?>" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                                 <input type="email" class="form-control" id="email" name="email" 
-                                       value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>" required>
+                                       value="<?= e($_POST['email'] ?? '') ?>" required>
                             </div>
                         </div>
                     </div>
@@ -61,14 +59,14 @@ include '../../layout/admin_header.php';
                             <div class="mb-3">
                                 <label for="phone_number" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
                                 <input type="tel" class="form-control" id="phone_number" name="phone_number" 
-                                       value="<?= isset($_POST['phone_number']) ? htmlspecialchars($_POST['phone_number']) : '' ?>" required>
+                                       value="<?= e($_POST['phone_number'] ?? '') ?>" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="id_card_number" class="form-label">Số CMND/CCCD <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="id_card_number" name="id_card_number" 
-                                       value="<?= isset($_POST['id_card_number']) ? htmlspecialchars($_POST['id_card_number']) : '' ?>" required>
+                                       value="<?= e($_POST['id_card_number'] ?? '') ?>" required>
                             </div>
                         </div>
                     </div>

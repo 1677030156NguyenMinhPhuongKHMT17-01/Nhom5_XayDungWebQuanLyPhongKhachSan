@@ -45,7 +45,7 @@ function getRoomTypeById($id) {
 /**
  * Tạo mới loại phòng
  */
-function createRoomType($name_Room_Type, $price_per_night, $capacity) {
+function createRoomType($name_Room_Type, $description, $image, $price_per_night, $capacity) {
     $conn = getDbConnection();
     
     // Kiểm tra tên loại phòng đã tồn tại chưa
@@ -63,9 +63,9 @@ function createRoomType($name_Room_Type, $price_per_night, $capacity) {
     mysqli_stmt_close($checkStmt);
     
     // Thêm loại phòng mới
-    $sql = "INSERT INTO roomtypes (name_Room_Type, price_per_night, capacity) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO roomtypes (name_Room_Type, description, image, price_per_night, capacity) VALUES (?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sdi", $name_Room_Type, $price_per_night, $capacity);
+    mysqli_stmt_bind_param($stmt, "sssdi", $name_Room_Type, $description, $image, $price_per_night, $capacity);
     
     $result = mysqli_stmt_execute($stmt);
     
@@ -78,7 +78,7 @@ function createRoomType($name_Room_Type, $price_per_night, $capacity) {
 /**
  * Cập nhật thông tin loại phòng
  */
-function updateRoomType($id, $name_Room_Type, $price_per_night, $capacity) {
+function updateRoomType($id, $name_Room_Type, $description, $image, $price_per_night, $capacity) {
     $conn = getDbConnection();
     
     // Kiểm tra tên loại phòng đã tồn tại với loại phòng khác chưa
@@ -95,9 +95,9 @@ function updateRoomType($id, $name_Room_Type, $price_per_night, $capacity) {
     }
     mysqli_stmt_close($checkStmt);
     
-    $sql = "UPDATE roomtypes SET name_Room_Type = ?, price_per_night = ?, capacity = ? WHERE id = ?";
+    $sql = "UPDATE roomtypes SET name_Room_Type = ?, description = ?, image = ?, price_per_night = ?, capacity = ? WHERE id = ?";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sdii", $name_Room_Type, $price_per_night, $capacity, $id);
+    mysqli_stmt_bind_param($stmt, "sssdii", $name_Room_Type, $description, $image, $price_per_night, $capacity, $id);
     
     $result = mysqli_stmt_execute($stmt);
     

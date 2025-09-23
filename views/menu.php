@@ -59,6 +59,12 @@ $currentUser = getCurrentUser();
                     <li class="nav-item">
                         <a class="nav-link" href="booking.php"><i class="fas fa-calendar-check"></i> Đặt phòng</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="checkin_dashboard.php"><i class="fas fa-door-open"></i> Check-in/out</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reports.php"><i class="fas fa-chart-bar"></i> Báo cáo</a>
+                    </li>
                 </ul>
                 <!-- Left links -->
             </div>

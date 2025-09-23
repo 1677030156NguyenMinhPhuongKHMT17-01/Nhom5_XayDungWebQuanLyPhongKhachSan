@@ -1,191 +1,89 @@
 /**
- * Dark Mode Toggle Functionality
- * BTL Hotel Management System
+ * Optimized Dark Mode Toggle - BTL Hotel Management System
+ * Simplified and lightweight implementation
  */
 
 class ThemeManager {
     constructor() {
+        this.storageKey = 'btl-theme';
         this.init();
     }
 
     init() {
-        // Khởi tạo theme từ localStorage hoặc mặc định
         this.loadTheme();
-        
-        // Tạo toggle button
-        this.createToggleButton();
-        
-        // Bind events
         this.bindEvents();
-        
-        console.log('Theme Manager initialized');
     }
 
     loadTheme() {
-        const savedTheme = localStorage.getItem('btl-theme') || 'light';
-        this.setTheme(savedTheme, false);
-    }
-
-    saveTheme(theme) {
-        localStorage.setItem('btl-theme', theme);
+        const theme = localStorage.getItem(this.storageKey) || 'light';
+        this.setTheme(theme, false);
     }
 
     setTheme(theme, save = true) {
-        const htmlElement = document.documentElement;
-        
+        // Update DOM
         if (theme === 'dark') {
-            htmlElement.setAttribute('data-theme', 'dark');
+            document.documentElement.setAttribute('data-theme', 'dark');
         } else {
-            htmlElement.removeAttribute('data-theme');
+            document.documentElement.removeAttribute('data-theme');
         }
         
-        // Cập nhật icon
-        this.updateToggleIcon(theme);
+        // Update toggle icons
+        this.updateIcons(theme);
         
-        // Lưu vào localStorage
+        // Save to localStorage
         if (save) {
-            this.saveTheme(theme);
+            localStorage.setItem(this.storageKey, theme);
         }
         
-        // Dispatch event để các component khác có thể lắng nghe
-        window.dispatchEvent(new CustomEvent('themeChanged', { 
-            detail: { theme } 
-        }));
+        // Dispatch event
+        window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
+    }
+
+    toggleTheme() {
+        const current = this.getCurrentTheme();
+        const newTheme = current === 'dark' ? 'light' : 'dark';
+        this.setTheme(newTheme);
     }
 
     getCurrentTheme() {
         return document.documentElement.getAttribute('data-theme') || 'light';
     }
 
-    toggleTheme() {
-        const currentTheme = this.getCurrentTheme();
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        this.setTheme(newTheme);
+    updateIcons(theme) {
+        const icons = document.querySelectorAll('#theme-toggle i, .theme-toggle i');
+        const iconClass = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
+        const title = theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối';
         
-        // Add animation class for smooth transition
-        document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
-        setTimeout(() => {
-            document.body.style.transition = '';
-        }, 300);
-    }
-
-    createToggleButton() {
-        // Tìm navbar để thêm button
-        const navbar = document.querySelector('.navbar .container-fluid');
-        if (!navbar) return;
-
-        // Tạo button toggle
-        const toggleButton = document.createElement('button');
-        toggleButton.className = 'theme-toggle btn ms-2';
-        toggleButton.id = 'theme-toggle';
-        toggleButton.setAttribute('aria-label', 'Toggle dark mode');
-        toggleButton.setAttribute('title', 'Chuyển đổi giao diện tối/sáng');
-        
-        // Tạo icon container
-        const iconContainer = document.createElement('span');
-        iconContainer.className = 'theme-icon';
-        toggleButton.appendChild(iconContainer);
-        
-        // Thêm vào navbar (bên cạnh user info)
-        const navbarNav = navbar.querySelector('.navbar-nav:last-child');
-        if (navbarNav) {
-            const li = document.createElement('li');
-            li.className = 'nav-item d-flex align-items-center';
-            li.appendChild(toggleButton);
-            navbarNav.appendChild(li);
-        } else {
-            // Fallback: thêm trực tiếp vào container
-            navbar.appendChild(toggleButton);
-        }
-        
-        // Set initial icon
-        this.updateToggleIcon(this.getCurrentTheme());
-    }
-
-    updateToggleIcon(theme) {
-        const iconContainer = document.querySelector('#theme-toggle .theme-icon');
-        const iconDirect = document.querySelector('#theme-toggle i');
-        
-        if (iconContainer) {
-            if (theme === 'dark') {
-                iconContainer.innerHTML = '<i class="bi bi-sun" title="Chuyển sang giao diện sáng"></i>';
-            } else {
-                iconContainer.innerHTML = '<i class="bi bi-moon" title="Chuyển sang giao diện tối"></i>';
-            }
-        } else if (iconDirect) {
-            if (theme === 'dark') {
-                iconDirect.className = 'bi bi-sun';
-                iconDirect.setAttribute('title', 'Chuyển sang giao diện sáng');
-            } else {
-                iconDirect.className = 'bi bi-moon';
-                iconDirect.setAttribute('title', 'Chuyển sang giao diện tối');
-            }
-        }
+        icons.forEach(icon => {
+            icon.className = iconClass;
+            icon.setAttribute('title', title);
+        });
     }
 
     bindEvents() {
-        // Event listener cho toggle button
+        // Handle theme toggle clicks
         document.addEventListener('click', (e) => {
-            if (e.target.closest('#theme-toggle')) {
+            if (e.target.closest('#theme-toggle, .theme-toggle')) {
                 e.preventDefault();
                 this.toggleTheme();
             }
         });
 
-        // Keyboard support
+        // Handle keyboard shortcuts (Ctrl/Cmd + D)
         document.addEventListener('keydown', (e) => {
-            // Ctrl/Cmd + Shift + T để toggle theme
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T') {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
                 e.preventDefault();
                 this.toggleTheme();
             }
         });
-
-        // Listen for system theme changes
-        if (window.matchMedia) {
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            mediaQuery.addListener((e) => {
-                // Chỉ áp dụng system theme nếu user chưa có preference
-                if (!localStorage.getItem('btl-theme')) {
-                    this.setTheme(e.matches ? 'dark' : 'light', false);
-                }
-            });
-        }
-    }
-
-    // Public methods for external use
-    getDarkMode() {
-        return this.getCurrentTheme() === 'dark';
-    }
-
-    enableDarkMode() {
-        this.setTheme('dark');
-    }
-
-    enableLightMode() {
-        this.setTheme('light');
-    }
-
-    resetToSystemTheme() {
-        localStorage.removeItem('btl-theme');
-        const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        this.setTheme(systemDark ? 'dark' : 'light', false);
     }
 }
 
-// Auto-initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Khởi tạo Theme Manager
+// Initialize theme manager when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.themeManager = new ThemeManager();
+    });
+} else {
     window.themeManager = new ThemeManager();
-    
-    // Thêm một số utility functions global
-    window.toggleDarkMode = () => window.themeManager.toggleTheme();
-    window.isDarkMode = () => window.themeManager.getDarkMode();
-    
-    console.log('Dark mode functionality loaded');
-});
-
-// Export for modules (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ThemeManager;
 }

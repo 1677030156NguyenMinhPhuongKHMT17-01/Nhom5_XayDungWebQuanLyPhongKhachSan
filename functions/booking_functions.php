@@ -59,7 +59,7 @@ function getBookingById($id) {
 /**
  * Tạo mới booking
  */
-function createBooking($guest_id, $room_id, $total_price, $status) {
+function createBooking($guest_id, $room_id, $check_in_date, $check_out_date, $total_price, $status) {
     $conn = getDbConnection();
     
     // Kiểm tra phòng có available không
@@ -99,10 +99,24 @@ function createBooking($guest_id, $room_id, $total_price, $status) {
         mysqli_stmt_close($checkGuestStmt);
     }
     
-    // Tạo booking mới
-    $sql = "INSERT INTO bookings (guest_id, room_id, total_price, status) VALUES (?, ?, ?, ?)";
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sids", $guest_id, $room_id, $total_price, $status);
+    // Tính số đêm
+    $nights = (strtotime($check_out_date) - strtotime($check_in_date)) / (60 * 60 * 24);
+    
+    // Kiểm tra xem các cột mới có tồn tại không
+    $checkColumns = mysqli_query($conn, "SHOW COLUMNS FROM bookings LIKE 'check_in_date'");
+    $hasNewColumns = mysqli_num_rows($checkColumns) > 0;
+    
+    if ($hasNewColumns) {
+        // Tạo booking mới với các cột mới
+        $sql = "INSERT INTO bookings (guest_id, room_id, check_in_date, check_out_date, nights, total_price, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "sissids", $guest_id, $room_id, $check_in_date, $check_out_date, $nights, $total_price, $status);
+    } else {
+        // Fallback cho hệ thống cũ không có cột check_in_date, check_out_date, nights
+        $sql = "INSERT INTO bookings (guest_id, room_id, total_price, status) VALUES (?, ?, ?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "iids", $guest_id, $room_id, $total_price, $status);
+    }
     
     $result = mysqli_stmt_execute($stmt);
     
@@ -120,7 +134,7 @@ function createBooking($guest_id, $room_id, $total_price, $status) {
 /**
  * Cập nhật thông tin booking
  */
-function updateBooking($id, $guest_id, $room_id, $total_price, $status) {
+function updateBooking($id, $guest_id, $room_id, $check_in_date, $check_out_date, $total_price, $status) {
     $conn = getDbConnection();
     
     // Lấy thông tin booking cũ để so sánh
@@ -153,10 +167,24 @@ function updateBooking($id, $guest_id, $room_id, $total_price, $status) {
         mysqli_stmt_close($checkRoomStmt);
     }
     
-    // Cập nhật booking
-    $sql = "UPDATE bookings SET guest_id = ?, room_id = ?, total_price = ?, status = ? WHERE id = ?";
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sidsi", $guest_id, $room_id, $total_price, $status, $id);
+    // Tính số đêm
+    $nights = (strtotime($check_out_date) - strtotime($check_in_date)) / (60 * 60 * 24);
+    
+    // Kiểm tra xem các cột mới có tồn tại không
+    $checkColumns = mysqli_query($conn, "SHOW COLUMNS FROM bookings LIKE 'check_in_date'");
+    $hasNewColumns = mysqli_num_rows($checkColumns) > 0;
+    
+    if ($hasNewColumns) {
+        // Cập nhật booking với các cột mới
+        $sql = "UPDATE bookings SET guest_id = ?, room_id = ?, check_in_date = ?, check_out_date = ?, nights = ?, total_price = ?, status = ? WHERE id = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "sissiosi", $guest_id, $room_id, $check_in_date, $check_out_date, $nights, $total_price, $status, $id);
+    } else {
+        // Fallback cho hệ thống cũ không có cột check_in_date, check_out_date, nights
+        $sql = "UPDATE bookings SET guest_id = ?, room_id = ?, total_price = ?, status = ? WHERE id = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "iidsi", $guest_id, $room_id, $total_price, $status, $id);
+    }
     
     $result = mysqli_stmt_execute($stmt);
     

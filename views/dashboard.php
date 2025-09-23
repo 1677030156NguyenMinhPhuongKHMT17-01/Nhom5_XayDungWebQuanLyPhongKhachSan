@@ -118,6 +118,54 @@ include '../layout/admin_header.php';
             </div>
         </div><!-- End Statistics Cards -->
 
+        <!-- Quick Access Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-lightning text-warning"></i> Truy cập nhanh
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <a href="checkin_dashboard.php" class="btn btn-primary w-100 p-3 text-start">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-calendar-check-fill me-3 fs-3"></i>
+                                        <div>
+                                            <h6 class="mb-1">Check-in/Check-out</h6>
+                                            <small class="text-light">Quản lý check-in và check-out</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <a href="reports.php" class="btn btn-success w-100 p-3 text-start">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-graph-up me-3 fs-3"></i>
+                                        <div>
+                                            <h6 class="mb-1">Báo cáo & Thống kê</h6>
+                                            <small class="text-light">Doanh thu và phân tích</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <a href="booking.php" class="btn btn-info w-100 p-3 text-start">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-plus-circle-fill me-3 fs-3"></i>
+                                        <div>
+                                            <h6 class="mb-1">Đặt phòng mới</h6>
+                                            <small class="text-light">Tạo booking mới</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- End Quick Access Section -->
+
             <div class="col-md-3">
                 <div class="card bg-success text-white">
                     <div class="card-body">
