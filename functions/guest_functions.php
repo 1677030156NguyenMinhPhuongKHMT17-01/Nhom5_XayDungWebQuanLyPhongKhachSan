@@ -116,7 +116,7 @@ function deleteGuest($id) {
     // Kiểm tra xem khách hàng có booking nào không
     $checkSql = "SELECT id FROM bookings WHERE guest_id = ?";
     $checkStmt = mysqli_prepare($conn, $checkSql);
-    mysqli_stmt_bind_param($checkStmt, "s", $id);
+    mysqli_stmt_bind_param($checkStmt, "i", $id);
     mysqli_stmt_execute($checkStmt);
     $checkResult = mysqli_stmt_get_result($checkStmt);
     

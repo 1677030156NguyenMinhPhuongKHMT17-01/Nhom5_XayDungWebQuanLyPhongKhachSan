@@ -170,24 +170,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 "Bạn có chắc chắn muốn xóa mục này?";
             
             if (confirm(message)) {
-                const form = document.createElement("form");
-                form.method = "POST";
-                form.action = action;
-                
-                const actionInput = document.createElement("input");
-                actionInput.type = "hidden";
-                actionInput.name = "action";
-                actionInput.value = "delete";
-                
-                const idInput = document.createElement("input");
-                idInput.type = "hidden";
-                idInput.name = "id";
-                idInput.value = id;
-                
-                form.appendChild(actionInput);
-                form.appendChild(idInput);
-                document.body.appendChild(form);
-                form.submit();
+                // Sử dụng GET thay vì POST để tương thích với các file handle hiện tại
+                window.location.href = action + "?action=delete&id=" + id;
             }
         });
     });
