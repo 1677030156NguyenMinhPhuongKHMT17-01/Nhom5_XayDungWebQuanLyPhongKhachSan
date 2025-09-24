@@ -78,7 +78,7 @@ Hệ thống quản lý phòng khách sạn (Hotel Management System) được p
 
 ### 3.4. 🏨 Quản lý Loại phòng  
 - Trang danh sách loại phòng
-<img width="974" height="451" alt="image" src="https://github.com/user-attachments/assets/20cb3a9a-ce00-460f-b8cf-cf54ca82697a" />
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/14847be2-67e6-4857-a56a-b8d9a7c10ad7" />
 
 
 - Form thêm/sửa loại phòng
