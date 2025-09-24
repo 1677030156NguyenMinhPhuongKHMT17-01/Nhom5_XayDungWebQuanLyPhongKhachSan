@@ -220,10 +220,10 @@ CREATE TABLE `bookings` (
 INSERT INTO users (username, password, role) VALUES ('admin', 'admin123', 'admin');
 
 -- Thêm dữ liệu mẫu loại phòng
-INSERT INTO roomtypes (type_name, price_per_night, capacity, description) VALUES
-('Standard', 500000.00, 2, 'Phòng tiêu chuẩn với đầy đủ tiện nghi cơ bản'),
-('Deluxe', 800000.00, 3, 'Phòng cao cấp với view đẹp và tiện nghi hiện đại'),
-('Suite', 1200000.00, 4, 'Phòng suite rộng rãi với khu vực tiếp khách riêng');
+INSERT INTO roomtypes (type_name, price_per_night, capacity, description, image) VALUES
+('Standard', 500000.00, 2, 'Phòng tiêu chuẩn với đầy đủ tiện nghi cơ bản', 'A.png'),
+('Deluxe', 800000.00, 3, 'Phòng cao cấp với view đẹp và tiện nghi hiện đại', 'B.png'),
+('Suite', 1200000.00, 4, 'Phòng suite rộng rãi với khu vực tiếp khách riêng', 'C.png');
 
 -- Thêm dữ liệu mẫu phòng
 INSERT INTO rooms (room_number, roomtype_id, status) VALUES
