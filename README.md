@@ -57,51 +57,66 @@ Hệ thống quản lý phòng khách sạn (Hotel Management System) được p
 
 ## 3. Hình ảnh các chức năng
 ### 3.1. 🔐 Trang Đăng nhập (login.png)
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/09b28be4-f6f2-43a2-a56f-394ea59420fa" />
+<img width="974" height="451" alt="image" src="https://github.com/user-attachments/assets/7b1d9208-cf5f-49a0-8f35-5175ea6714ff" />
+
 
 ### 3.2. 📊 Dashboard (dashboard.png)  
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/c72b2628-47c1-4178-af58-1bb184e2da70" />
+<img width="974" height="451" alt="image" src="https://github.com/user-attachments/assets/cc3c6fc6-ab63-4a61-959e-f7b0fc7da037" />
+
 
 ### 3.3. 👥 Quản lý Khách hàng
 - Trang danh sách khách hàng
-- <img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/904d6802-9d8d-460e-b275-b7195e75c7ac" />
+<img width="974" height="451" alt="image" src="https://github.com/user-attachments/assets/e2a8de25-ebfb-4a5c-999e-19f6807da106" />
+
 
 - Form thêm/sửa khách hàng mới
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/52fd5112-a75b-40af-bb25-2cf9d794c2db" />
+<img width="974" height="451" alt="image" src="https://github.com/user-attachments/assets/194c902e-db27-4a7f-8fe0-ea189afbe8d2" />
 
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/a761c24f-8d7a-4c5a-a62c-2d230a824996" />
+
+<img width="974" height="451" alt="image" src="https://github.com/user-attachments/assets/04ad5ad1-d683-418c-b8d5-05a2a9ebb534" />
+
 
 ### 3.4. 🏨 Quản lý Loại phòng  
 - Trang danh sách loại phòng
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/b6aba4a0-e621-46f3-9e92-5b23c9d617fb" />
+<img width="974" height="451" alt="image" src="https://github.com/user-attachments/assets/20cb3a9a-ce00-460f-b8cf-cf54ca82697a" />
+
 
 - Form thêm/sửa loại phòng
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/86cfc8ac-1810-49d5-ad18-e5799492ee48" />
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/fa5464f0-6f93-4063-82d3-7674944ce7f3" />
 
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/f06b457c-97ca-4e8c-83af-e8467b17c338" />
+
+
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/98b0b028-aebe-4ff6-8a4a-cc209fc8d196" />
 
 
 ### 3.5. 🚪 Quản lý Phòng
 - Trang danh sách phòng
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/b3435874-13fa-4ae0-a04c-87245876e457" />
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/f2c3242a-9000-424c-b407-76f95a36b459" />
+
+
 
 - Form cập nhật trạng thái phòng
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/42f5ca15-0231-4e3a-a37e-9779a8f7e2bc" />
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/519b96ff-ac96-4818-98d9-cb5bd0f8ceb9" />
+
 
 ### 3.6. 📅 Quản lý Đặt phòng
 - Trang danh sách đặt phòng  
 - Form tạo đặt phòng mới
 
 ### 3.7. 🔍 Tính năng Tìm kiếm
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/02a43cc3-e27b-438b-998f-6aba0374a177" />
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/98dde27e-5ded-4719-af27-b7235608106d" />
+
 
 
 ### 3.8. 🌙 Dark Mode
 - Giao diện sáng
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/1aaadb9e-a804-4209-acf1-6448cbeb03c3" />
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/c92c9ab5-3b32-4b6d-a588-cba6284b3efa" />
+
+
 
 - Giao diện tối  
-<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/d40e8d15-2364-4cd0-a4e6-3d6c77736b87" />
+<img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/b4a50add-d488-4f4e-a395-11c61b45a386" />
+
 
 ## ⚙️ 4. Cài đặt và Sử dụng
 
@@ -165,13 +180,16 @@ CREATE TABLE `guests` (
 
 -- Tạo bảng roomtypes (loại phòng)
 CREATE TABLE `roomtypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `type_name` varchar(50) NOT NULL,
-  `price_per_night` decimal(10,2) NOT NULL,
-  `capacity` int NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name_Room_Type` varchar(45) NOT NULL,
   `description` text,
-  PRIMARY KEY (`id`)
-);
+  `image` varchar(255) DEFAULT NULL,
+  `price_per_night` decimal(10,2) unsigned NOT NULL,
+  `capacity` int unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `nameRoomType_UNIQUE` (`name_Room_Type`)
+)
 
 -- Tạo bảng rooms (phòng)
 CREATE TABLE `rooms` (
