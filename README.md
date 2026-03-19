@@ -251,7 +251,14 @@ INSERT INTO rooms (room_number, roomtype_id, status) VALUES
 ```
 
 #### 4.2.4. Cập nhật database cho tính năng profile (nếu đã có database cũ)
-Nếu bạn đã có database từ trước, chạy câu lệnh sau để thêm các cột mới cho tính năng hồ sơ cá nhân:
+Nếu bạn đã có database từ trước, chạy file migration để thêm các cột mới cho tính năng hồ sơ cá nhân:
+
+**Cách 1: Sử dụng MySQL Workbench**
+1. Mở MySQL Workbench và kết nối đến database
+2. Mở file `docs/database_migration_profile.sql`
+3. Chạy toàn bộ script
+
+**Cách 2: Chạy lệnh thủ công**
 ```sql
 -- Thêm các cột mới vào bảng users
 ALTER TABLE `users`
