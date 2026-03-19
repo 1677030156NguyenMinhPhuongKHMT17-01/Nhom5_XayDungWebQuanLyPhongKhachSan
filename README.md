@@ -28,7 +28,8 @@ Hệ thống quản lý phòng khách sạn (Hotel Management System) được p
 - 🚪 **Quản lý phòng**: Theo dõi trạng thái phòng (trống, đã thuê, bảo trì)
 - 📅 **Quản lý đặt phòng**: Tạo, cập nhật và theo dõi các đơn đặt phòng
 - 📊 **Dashboard**: Thống kê tổng quan về tình hình hoạt động
-- 🔍 **Tìm kiếm**: Tìm kiếm nhanh trong tất cả các module 
+- 🔍 **Tìm kiếm**: Tìm kiếm nhanh trong tất cả các module
+- 👤 **Hồ sơ cá nhân**: Quản lý và giới thiệu thông tin cá nhân của người dùng
 - 🌙 **Dark Mode**: Chế độ giao diện tối/sáng
 
 ## 🔧 2. Các công nghệ được sử dụng
@@ -108,7 +109,15 @@ Hệ thống quản lý phòng khách sạn (Hotel Management System) được p
 
 
 
-### 3.8. 🌙 Dark Mode
+### 3.8. 👤 Hồ sơ cá nhân
+- Trang hồ sơ cá nhân với thông tin chi tiết
+- Chức năng chỉnh sửa thông tin: họ tên, email, số điện thoại, giới thiệu bản thân
+- Đổi mật khẩu an toàn
+- Thống kê tài khoản
+
+
+
+### 3.9. 🌙 Dark Mode
 - Giao diện sáng
 <img width="1910" height="885" alt="image" src="https://github.com/user-attachments/assets/c92c9ab5-3b32-4b6d-a588-cba6284b3efa" />
 
@@ -163,8 +172,15 @@ CREATE TABLE `users` (
   `username` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
   `role` varchar(45) NOT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `full_name` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `bio` text DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username_UNIQUE` (`username`)
+  UNIQUE KEY `username_UNIQUE` (`username`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
 );
 
 -- Tạo bảng guests (khách hàng)
@@ -234,7 +250,21 @@ INSERT INTO rooms (room_number, roomtype_id, status) VALUES
 ('301', 3, 'available');
 ```
 
-#### 4.2.4. Cấu hình kết nối database
+#### 4.2.4. Cập nhật database cho tính năng profile (nếu đã có database cũ)
+Nếu bạn đã có database từ trước, chạy câu lệnh sau để thêm các cột mới cho tính năng hồ sơ cá nhân:
+```sql
+-- Thêm các cột mới vào bảng users
+ALTER TABLE `users`
+ADD COLUMN `email` varchar(100) DEFAULT NULL,
+ADD COLUMN `full_name` varchar(100) DEFAULT NULL,
+ADD COLUMN `phone` varchar(20) DEFAULT NULL,
+ADD COLUMN `bio` text DEFAULT NULL,
+ADD COLUMN `avatar` varchar(255) DEFAULT NULL,
+ADD COLUMN `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+ADD UNIQUE KEY `email_UNIQUE` (`email`);
+```
+
+#### 4.2.5. Cấu hình kết nối database
 Chỉnh sửa file `functions/db_connection.php`:
 ```php
 $servername = "localhost";
